@@ -25,8 +25,9 @@ public class Test {
         loginPage = new LoginPage();
 
     }
+
     @org.testng.annotations.Test
-    public void test5(){
+    public void test1(){
 
         loginPage.writeUsername("standard_user");
         loginPage.writePassword("secret_sauce");
@@ -35,6 +36,8 @@ public class Test {
         productsPage = new ProductsPage();
 
         productsPage.addToCart();
+
+        productsPage.checkAmountOfCart(1);
 
         productsPage.openCart();
 
@@ -45,6 +48,37 @@ public class Test {
         cartPage.openLeftSideMenu();
 
         cartPage.logout();
+
+        loginPage = new LoginPage();
+
+        sleep(3000);
+    }
+    @org.testng.annotations.Test
+    public void test5(){
+
+        loginPage.writeUsername("standard_user");
+        loginPage.writePassword("secret_sauce");
+        loginPage.auth();
+
+        productsPage = new ProductsPage();
+
+        productsPage.checkAllProducts(6);
+
+        productsPage.addToCart();
+
+        productsPage.checkAmountOfCart(1);
+
+        productsPage.openCart();
+
+        cartPage = new CartPage();
+
+        cartPage.deleteFromCart();
+
+        cartPage.openLeftSideMenu();
+
+        cartPage.logout();
+
+        loginPage = new LoginPage();
 
         sleep(3000);
     }
