@@ -11,14 +11,13 @@ import org.testng.Assert;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+import static com.codeborne.selenide.Condition.enabled;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
-public class ProductsPage {
+public class ProductsPage extends BasePage {
     //Хранение товаров
     SelenideElement products = $$x("(//*[@id=\"inventory_container\"])[1]/div").first();
     ElementsCollection productDetails = products.$$(".inventory_item");
@@ -39,21 +38,26 @@ public class ProductsPage {
     //ElementsCollection leftSideMenuContent =
     private final SelenideElement logout = $x("//*[@id=\"logout_sidebar_link\"]");
     public void openLeftSideMenu(){
-        menu.shouldBe(Condition.visible).click();
+        menu.shouldBe(visible).click();
     }
 
     public void logout(){
-        logout.shouldBe(Condition.visible).click();
+        logout.shouldBe(visible).click();
     }
-
 
     public ProductsPage() {
-        Configuration.timeout = Duration.of(5, ChronoUnit.SECONDS).toMillis();
+        super();
     }
 
-//    public void addToCart(){
-//        products.get(1).$x(".//button[contains(@class, 'btn_inventory')]").shouldBe(Condition.visible).click();
-//    }
+    public List<String> addToCartRandom(){
+        Random random = new Random();
+        SelenideElement detail = productDetails.get(random.nextInt(6));
+        SelenideElement addToCartButton = detail.$(".btn_inventory");
+        addToCartButton.click();
+        List<String> results = new ArrayList<>();
+        Collections.addAll(results,detail.$(".inventory_item_name").text(),detail.$(".inventory_item_price").text(),detail.$(".inventory_item_desc").text());
+        return results;
+    }
 
     public void openCart(){
         cart.click();
@@ -61,7 +65,6 @@ public class ProductsPage {
     public void openSortMenu(){
         sortMenu.click();
     }
-    //public void
 
     public void choseSortFromMenuByIndex(int index){
         // Находим элемент select сортировки
@@ -73,7 +76,7 @@ public class ProductsPage {
         // Проверяем, что индекс находится в пределах диапазона опций
         if (index >= 0 && index < options.size()) {
             // Кликаем на опцию с переданным индексом
-            options.get(index).shouldBe(Condition.visible).click();
+            options.get(index).shouldBe(visible).click();
         } else {
             // Выводим сообщение об ошибке, если индекс выходит за пределы диапазона
             System.out.println("Индекс сортировки находится за пределами допустимого диапазона");
@@ -200,7 +203,11 @@ public class ProductsPage {
 
     @Step("Проверка отображения всех элементов левого бокового меню")
     public void checkLeftSideMenuContent(){
+        ElementsCollection menuButtons = $$(".bm-item.menu-item");
 
+        // Проверяем отображение и активность каждой кнопки
+        for (SelenideElement button : menuButtons) {
+            button.shouldBe(visible).shouldBe(enabled);
+        }
     }
-
 }
