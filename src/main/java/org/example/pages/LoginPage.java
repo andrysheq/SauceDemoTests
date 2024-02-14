@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 
 import static com.codeborne.selenide.Selenide.$x;
 
-public class LoginPage {
+public class LoginPage extends BasePage{
     private final WebElement username = $x("//*[@id=\"user-name\"]");
 
     private final WebElement password = $x("//*[@id=\"password\"]");
@@ -23,7 +23,7 @@ public class LoginPage {
 
 
     public LoginPage() {
-        Configuration.timeout = Duration.of(5, ChronoUnit.SECONDS).toMillis();
+        super();
     }
 
     public void writeUsername(String username) {
