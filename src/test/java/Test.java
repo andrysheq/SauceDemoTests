@@ -44,21 +44,32 @@ public class Test {
         productsPage.checkAllProducts(6);
 
         //Добавление всех товаров в корзину
-        //productsPage.addToCartAllProducts();
+        productsPage.addToCartAllProducts();
 
         //Проверка счетчика у корзины
-        //productsPage.checkAmountOfCart(6);
+        productsPage.checkAmountOfCart(6);
+
+        //Проверка корректного отображения всех кнопок REMOVE
+        productsPage.checkAllRemoveButtons();
 
         //Удаление всех товаров из корзины
-        //productsPage.removeFromCartAllProducts();
+        productsPage.removeFromCartAllProducts();
+
+        //Проверяем счетчик корзины (не должен отображаться)
+        productsPage.checkCartCounterVisibility(false);
 
         //Сортировка Z-A
         productsPage.openSortMenu();
         productsPage.choseSortFromMenuByIndex(1);
 
+        //Проверка отсортированности
+        productsPage.checkSortZA();
+
         //Выход из учетной записи
         productsPage.openLeftSideMenu();
         productsPage.logout();
+
+        loginPage.checkLoginPage();
 
         sleep(3000);
     }

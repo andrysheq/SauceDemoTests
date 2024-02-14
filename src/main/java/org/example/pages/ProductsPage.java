@@ -11,36 +11,32 @@ import org.testng.Assert;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
 
 public class ProductsPage {
+    //Хранение товаров
+    SelenideElement products = $$x("(//*[@id=\"inventory_container\"])[1]/div").first();
+    ElementsCollection productDetails = products.$$(".inventory_item");
 
-//    private final SelenideElement addToCartFirst = $x("//*[@id=\"add-to-cart-sauce-labs-backpack\"]");
-//    private final SelenideElement addToCartSecond = $x("//*[@id=\"add-to-cart-sauce-labs-bike-light\"]");
-//    private final SelenideElement addToCartThird = $x("//*[@id=\"add-to-cart-sauce-labs-bolt-t-shirt\"]");
-//    private final SelenideElement addToCartFourth = $x("//*[@id=\"add-to-cart-sauce-labs-fleece-jacket\"]");
-//    private final SelenideElement addToCartFifth = $x("//*[@id=\"add-to-cart-sauce-labs-onesie\"]");
-//    private final SelenideElement addToCartSixth = $x("//*[@id=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]");
-//    private final SelenideElement removeFromCartFirst = $x("//*[@id=\"remove-sauce-labs-backpack\"]");
-//
-//    private final SelenideElement removeFromCartSecond = $x("//*[@id=\"remove-sauce-labs-bike-light\"]");
-//    private final SelenideElement removeFromCartThird = $x("//*[@id=\"remove-sauce-labs-bolt-t-shirt\"]");
-//    private final SelenideElement removeFromCartFourth = $x("//*[@id=\"remove-sauce-labs-fleece-jacket\"]");
-//    private final SelenideElement removeFromCartFifth = $x("//*[@id=\"remove-sauce-labs-onesie\"]");
-//    private final SelenideElement removeFromCartSixth = $x("//*[@id=\"remove-test.allthethings()-t-shirt-(red)\"]");
+    //Элементы, которые нужны для работы с корзиной
+    private final SelenideElement cart = $x("//*[@id=\"shopping_cart_container\"]/a");
+    private final SelenideElement cartCounter = $x("//*[@id=\"shopping_cart_container\"]/a/span");
 
-//    List<SelenideElement> addToCartButtons = List.of(addToCartFirst,addToCartSecond,addToCartThird,addToCartFourth,addToCartFifth,addToCartSixth);
-//    List<SelenideElement> removeButtons = List.of(removeFromCartFirst,removeFromCartSecond,removeFromCartThird,removeFromCartFourth,removeFromCartFifth,removeFromCartSixth);
+    //Заголовок
+    private final SelenideElement productsHeader = $x("//*[@id=\"header_container\"]/div[2]/span");
 
-    ElementsCollection products = $$x("//*[@id=\"inventory_container\"]/div");
+    //Меню сортировки списка товаров
+    private final SelenideElement sortMenu = $x("//*[@id=\"header_container\"]/div[2]/div/span/select");
 
-    private final SelenideElement cart = $x("//*[@id=\"shopping_cart_container\"]/a").shouldBe(Condition.visible);
-
-    private final SelenideElement productsHeader = $x("//*[@id=\"header_container\"]/div[2]/span").shouldBe(Condition.visible);
-
-    private final SelenideElement sortMenu = $x("//*[@id=\"header_container\"]/div[2]/div/span/select").shouldBe(Condition.visible);
+    //Левое боковое меню и кнопка выхода из аккаунта
     private final SelenideElement menu = $x("//*[@id=\"react-burger-menu-btn\"]");
+
+    //ElementsCollection leftSideMenuContent =
     private final SelenideElement logout = $x("//*[@id=\"logout_sidebar_link\"]");
     public void openLeftSideMenu(){
         menu.shouldBe(Condition.visible).click();
@@ -55,9 +51,9 @@ public class ProductsPage {
         Configuration.timeout = Duration.of(5, ChronoUnit.SECONDS).toMillis();
     }
 
-    public void addToCart(){
-        products.get(1).$x(".//button[contains(@class, 'btn_inventory')]").shouldBe(Condition.visible).click();
-    }
+//    public void addToCart(){
+//        products.get(1).$x(".//button[contains(@class, 'btn_inventory')]").shouldBe(Condition.visible).click();
+//    }
 
     public void openCart(){
         cart.click();
@@ -84,18 +80,42 @@ public class ProductsPage {
         }
     }
 
-//    public void addToCartAllProducts(){
-//        addToCartButtons.forEach(o->o.shouldBe(Condition.visible).click());
-//    }
-//
-//    public void removeFromCartAllProducts(){
-//        removeButtons.stream()
-//                .filter(element -> element.shouldBe(Condition.visible).text().equalsIgnoreCase("REMOVE"))
-//                .forEach(SelenideElement::click);
-//    }
+    public void addToCartAllProducts(){
+        for(SelenideElement detail : productDetails){
+            SelenideElement addToCartButton = detail.$(".btn_inventory");
+            addToCartButton.click();
+        }
+    }
+
+    public void removeFromCartAllProducts(){
+        for(SelenideElement detail : productDetails){
+            SelenideElement removeButton = detail.$(".btn_inventory");
+            removeButton.click();
+        }
+    }
+
+    @Step("Проверка корректного отображения кнопки REMOVE")
+    public void checkAllRemoveButtons(){
+        for(SelenideElement detail : productDetails){
+            SelenideElement removeButton = detail.$(".btn_inventory");
+            Assert.assertTrue(removeButton.isDisplayed() &&
+                    removeButton.isEnabled() &&
+                    removeButton.text().equalsIgnoreCase("REMOVE"));
+        }
+    }
+
+    @Step("Проверка корректного отображения кнопки REMOVE")
+    public void checkRemoveButton(int index){
+        SelenideElement detail = productDetails.get(index);
+            SelenideElement removeButton = detail.$(".btn_inventory");
+            Assert.assertTrue(removeButton.isDisplayed() &&
+                    removeButton.isEnabled() &&
+                    removeButton.text().equalsIgnoreCase("REMOVE"));
+    }
+
     @Step("Проверка количества продуктов в корзине")
     public void checkAmountOfCart(int expectedAmount){
-        String cartProductsText = $x("//*[@id=\"shopping_cart_container\"]/a/span").getText();
+        String cartProductsText = cartCounter.getText();
 
         int actualAmount = Integer.parseInt(cartProductsText);
 
@@ -105,6 +125,11 @@ public class ProductsPage {
 
             throw new AssertionError("Количество продуктов в корзине не соответствует ожидаемому значению");
         }
+    }
+
+    @Step("Проверка отображения счетчика корзины, с передаваемым значением true и false")
+    public void checkCartCounterVisibility(boolean value){
+        Assert.assertEquals(value, cartCounter.isDisplayed(), "Ошибка отображения счетчика корзины");
     }
 
     @Step("Проверка отображения товаров в алфавитном порядке")
@@ -119,16 +144,12 @@ public class ProductsPage {
         }
 
         // Сравнение названий, цен и описаний
-
         checkProduct(0, "Sauce Labs Backpack", "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.", "$29.99");
         checkProduct(1, "Sauce Labs Bike Light", "A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.", "$9.99");
         checkProduct(2, "Sauce Labs Bolt T-Shirt", "Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% ringspun combed cotton, heather gray with red bolt.", "$15.99");
         checkProduct(3, "Sauce Labs Fleece Jacket", "It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office.", "$49.99");
         checkProduct(4, "Sauce Labs Onesie", "Rib snap infant onesie for the junior automation engineer in development. Reinforced 3-snap bottom closure, two-needle hemmed sleeved and bottom won't unravel.", "$7.99");
         checkProduct(5, "Test.allTheThings() T-Shirt (Red)", "This classic Sauce Labs t-shirt is perfect to wear when cozying up to your keyboard to automate a few tests. Super-soft and comfy ringspun combed cotton.", "$15.99");
-
-
-
     }
 
     @Step("Проверка отображения заголовков и кнопок")
@@ -140,26 +161,46 @@ public class ProductsPage {
 
     @Step("Проверка товара по его номеру")
     public void checkProduct(int index, String name, String description, String price) {
-//        Assert.assertEquals(name, products.get(index).
-//                $x(".//div[@class='inventory_item_name']").
-//                getText(), "Неверное имя товара");
-//
-//        Assert.assertEquals(description, products.get(index).
-//                $x(".//div[@class='inventory_item_label']//div[@class='inventory_item_desc']").
-//                getText(), "Неверное описание товара");
-//
-        Assert.assertEquals(price, products.get(index).
-                $x(".//div[@class='inventory_item_price']").
-                getText(), "Неверная цена товара");
+        //Выбираем товар по индексу для проверки
+        SelenideElement detail = productDetails.get(index);
 
-        SelenideElement addToCart = products.get(index).
-                $x(".//button[text()='Add to cart']");
-        System.out.println(products);
-        addToCart.click();
-        //Assert.assertTrue(addToCart.isDisplayed() , "Кнопка ADD TO CART не отображена");
-        //Assert.assertTrue(addToCart.isEnabled() , "Кнопка неактивна");
+        //Проверяем название
+        SelenideElement productNameElement = detail.$(".inventory_item_name");
+        Assert.assertEquals(name, productNameElement.text());
 
+        //Проверяем цену
+        SelenideElement productPriceElement = detail.$(".inventory_item_price");
+        Assert.assertEquals(price,productPriceElement.text());
+
+        //Проверяем отображение и активность кнопки ADD TO CART
+        SelenideElement addToCartButton = detail.$(".btn_inventory");
+        Assert.assertTrue(addToCartButton.isDisplayed() && addToCartButton.isEnabled());
+
+        //Проверяем описание
+        SelenideElement productDescriptionElement = detail.$(".inventory_item_desc");
+        Assert.assertEquals(description,productDescriptionElement.getText());
     }
 
+    @Step("Проверка отсортированности списка товаров")
+    public void checkSortZA(){
+        List<String> productsTitles = new ArrayList<>();
+        for(SelenideElement detail : productDetails){
+            String productNameElement = detail.$(".inventory_item_name").getText();
+            productsTitles.add(productNameElement);
+        }
+        List<String> sortedZAProductsTitles = new ArrayList<>(productsTitles);
+        sortedZAProductsTitles.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        Assert.assertEquals(sortedZAProductsTitles,productsTitles,"Список не отсортирован от Z до A");
+    }
+
+    @Step("Проверка отображения всех элементов левого бокового меню")
+    public void checkLeftSideMenuContent(){
+
+    }
 
 }
