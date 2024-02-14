@@ -28,58 +28,133 @@ public class Test {
 
     @org.testng.annotations.Test
     public void test1(){
+        //Проверка на корректное отображение элементов на странице авторизации
+        loginPage.checkLoginPage();
 
+        //Авторизация
         loginPage.writeUsername("standard_user");
         loginPage.writePassword("secret_sauce");
         loginPage.auth();
 
+        //Создания экземпляра страницы с товарами
         productsPage = new ProductsPage();
 
-        productsPage.addToCart();
-
-        productsPage.checkAmountOfCart(1);
-
-        productsPage.openCart();
-
-        cartPage = new CartPage();
-
-        cartPage.deleteFromCart();
-
-        cartPage.openLeftSideMenu();
-
-        cartPage.logout();
-
-        loginPage = new LoginPage();
-
-        sleep(3000);
-    }
-    @org.testng.annotations.Test
-    public void test5(){
-
-        loginPage.writeUsername("standard_user");
-        loginPage.writePassword("secret_sauce");
-        loginPage.auth();
-
-        productsPage = new ProductsPage();
-
+        //Проверка корректного отображения элементов на странице с товарами
+        productsPage.checkHeadersAndButtons();
         productsPage.checkAllProducts(6);
 
-        productsPage.addToCart();
+        //Добавление всех товаров в корзину
+        //productsPage.addToCartAllProducts();
 
-        productsPage.checkAmountOfCart(1);
+        //Проверка счетчика у корзины
+        //productsPage.checkAmountOfCart(6);
 
-        productsPage.openCart();
+        //Удаление всех товаров из корзины
+        //productsPage.removeFromCartAllProducts();
 
-        cartPage = new CartPage();
+        //Сортировка Z-A
+        productsPage.openSortMenu();
+        productsPage.choseSortFromMenuByIndex(1);
 
-        cartPage.deleteFromCart();
-
-        cartPage.openLeftSideMenu();
-
-        cartPage.logout();
-
-        loginPage = new LoginPage();
+        //Выход из учетной записи
+        productsPage.openLeftSideMenu();
+        productsPage.logout();
 
         sleep(3000);
     }
+
+//    @org.testng.annotations.Test
+//    public void test2(){
+//
+//        loginPage.writeUsername("locked_out_user");
+//        loginPage.writePassword("secret_sauce");
+//        loginPage.auth();
+//
+//        productsPage = new ProductsPage();
+//
+//        productsPage.addToCartAllProducts();
+//
+//        productsPage.checkAmountOfCart(6);
+//
+//        productsPage.removeFromCartAllProducts();
+//
+//        productsPage.choseSortFromMenuByIndex(1);
+//        productsPage.openLeftSideMenu();
+//        productsPage.logout();
+//
+//        sleep(3000);
+//    }
+//
+//    @org.testng.annotations.Test
+//    public void test3(){
+//
+//        loginPage.writeUsername("problem_user");
+//        loginPage.writePassword("secret_sauce");
+//        loginPage.auth();
+//
+//        productsPage = new ProductsPage();
+//
+//        productsPage.addToCartAllProducts();
+//
+//        productsPage.checkAmountOfCart(6);
+//
+//        productsPage.removeFromCartAllProducts();
+//
+//        productsPage.choseSortFromMenuByIndex(1);
+//        productsPage.openLeftSideMenu();
+//        productsPage.logout();
+//
+//        sleep(3000);
+//    }
+//
+//    @org.testng.annotations.Test
+//    public void test4(){
+//
+//        loginPage.writeUsername("performance_glitch_user");
+//        loginPage.writePassword("secret_sauce");
+//        loginPage.auth();
+//
+//        productsPage = new ProductsPage();
+//
+//        productsPage.addToCartAllProducts();
+//
+//        productsPage.checkAmountOfCart(6);
+//
+//        productsPage.removeFromCartAllProducts();
+//
+//        productsPage.choseSortFromMenuByIndex(1);
+//        productsPage.openLeftSideMenu();
+//        productsPage.logout();
+//
+//        sleep(3000);
+//    }
+//    @org.testng.annotations.Test
+//    public void test5(){
+//
+//        loginPage.writeUsername("standard_user");
+//        loginPage.writePassword("secret_sauce");
+//        loginPage.auth();
+//
+//        productsPage = new ProductsPage();
+//
+//        productsPage.checkAllProducts(6);
+//
+//        productsPage.addToCart();
+//
+//        productsPage.checkAmountOfCart(1);
+//
+//        productsPage.openCart();
+//
+//        cartPage = new CartPage();
+//
+//        cartPage.deleteFromCart();
+//
+//        cartPage.openLeftSideMenu();
+//
+//        cartPage.logout();
+//
+//        loginPage = new LoginPage();
+//
+//        sleep(3000);
+//    }
 }
