@@ -25,27 +25,25 @@ public class TestProblemUser {
         WebDriverRunner.clearBrowserCache();
         clearBrowserLocalStorage();
         clearBrowserCookies();
-        loginPage = new LoginPage();
-
     }
 
     @org.testng.annotations.Test
     public void test3(){
+        loginPage = new LoginPage();
         //Проверка на корректное отображение элементов на странице авторизации
-        BasePage.checkURL("https://www.saucedemo.com/");
+        loginPage.checkURL();
         loginPage.checkLoginPage();
 
         //Авторизация
         loginPage.writeUsername("problem_user");
         loginPage.writePassword("secret_sauce");
         loginPage.auth();
-        //Проверка успешной аутентификации
-        BasePage.checkURL("https://www.saucedemo.com/inventory.html");
 
         //Создания экземпляра страницы с товарами
         productsPage = new ProductsPage();
 
-        //Проверка корректного отображения элементов на странице с товарами
+        //Проверка успешной авторизации и корректного отображения элементов на странице с товарами
+        productsPage.checkURL();
         productsPage.checkHeadersAndButtons();
         productsPage.checkAllProducts(6);
 
@@ -78,7 +76,7 @@ public class TestProblemUser {
         //Выход из учетной записи
         productsPage.logout();
 
-        BasePage.checkURL("https://www.saucedemo.com/");
+        loginPage.checkURL();
         loginPage.checkLoginPage();
     }
 }

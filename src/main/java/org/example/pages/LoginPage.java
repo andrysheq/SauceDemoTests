@@ -1,16 +1,9 @@
 package org.example.pages;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
-
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 import static com.codeborne.selenide.Selenide.$x;
 
@@ -24,6 +17,14 @@ public class LoginPage extends BasePage{
 
     public LoginPage() {
         super();
+    }
+
+    @Override
+    @Step
+    public void checkURL() {
+        String currentURL = WebDriverRunner.url();
+        String expectedURL = "https://www.saucedemo.com/";
+        Assert.assertEquals(currentURL, expectedURL, "URL страницы не соответствует ожидаемому значению");
     }
 
     public void writeUsername(String username) {

@@ -24,29 +24,25 @@ public class TestPerformGlitchUser {
         WebDriverRunner.clearBrowserCache();
         clearBrowserLocalStorage();
         clearBrowserCookies();
-        loginPage = new LoginPage();
-
     }
 
     @org.testng.annotations.Test
     public void test4(){
+        loginPage = new LoginPage();
         //Проверка на корректное отображение элементов на странице авторизации
-        BasePage.checkURL("https://www.saucedemo.com/");
+        loginPage.checkURL();
         loginPage.checkLoginPage();
 
         //Авторизация
         loginPage.writeUsername("performance_glitch_user");
         loginPage.writePassword("secret_sauce");
         loginPage.auth();
-        //Проверка успешной аутентификации
-        BasePage.checkURL("https://www.saucedemo.com/inventory.html");
-
-        sleep(1000);
 
         //Создания экземпляра страницы с товарами
         productsPage = new ProductsPage();
 
-        //Проверка корректного отображения элементов на странице с товарами
+        //Проверка успешной авторизации и корректного отображения элементов на странице с товарами
+        productsPage.checkURL();
         productsPage.checkHeadersAndButtons();
         productsPage.checkAllProducts(6);
 
@@ -59,15 +55,11 @@ public class TestPerformGlitchUser {
         //Проверка корректного отображения всех кнопок REMOVE
         productsPage.checkAllRemoveButtons();
 
-        sleep(1000);
-
         //Удаление всех товаров из корзины
         productsPage.removeFromCartAllProducts();
 
         //Проверяем счетчик корзины (не должен отображаться)
         productsPage.checkCartCounterVisibility(false);
-
-        sleep(1000);
 
         //Сортировка Z-A
         productsPage.openSortMenu();
@@ -78,18 +70,13 @@ public class TestPerformGlitchUser {
 
         productsPage.openLeftSideMenu();
 
-        sleep(1000);
-
         //Проверка корректного отображения левого бокового меню
         productsPage.checkLeftSideMenuContent();
 
         //Выход из учетной записи
         productsPage.logout();
 
-        sleep(1000);
-        BasePage.checkURL("https://www.saucedemo.com/");
+        loginPage.checkURL();
         loginPage.checkLoginPage();
-
-        sleep(1000);
     }
 }

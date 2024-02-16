@@ -2,6 +2,7 @@ package org.example.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.example.models.Product;
@@ -33,6 +34,13 @@ public class ProductsPage extends BasePage {
 
     //ElementsCollection leftSideMenuContent =
     private final SelenideElement logout = $x("//*[@id=\"logout_sidebar_link\"]");
+    @Override
+    @Step
+    public void checkURL() {
+        String currentURL = WebDriverRunner.url();
+        String expectedURL = "https://www.saucedemo.com/inventory.html";
+        Assert.assertEquals(currentURL, expectedURL, "URL страницы не соответствует ожидаемому значению");
+    }
     public void openLeftSideMenu(){
         menu.shouldBe(visible).click();
     }
@@ -52,10 +60,10 @@ public class ProductsPage extends BasePage {
         SelenideElement addToCartButton = detail.$(".btn_inventory");
         addToCartButton.click();
         checkRemoveButton(randomIndexOfProduct);
-        Product product = new Product(detail.$(".inventory_item_price").text(),
+        Product addedProduct = new Product(detail.$(".inventory_item_price").text(),
                 detail.$(".inventory_item_name").text(),
                 detail.$(".inventory_item_desc").text());
-        return product;
+        return addedProduct;
     }
 
     public void openCart(){
@@ -162,12 +170,9 @@ public class ProductsPage extends BasePage {
         SelenideElement detail = productDetails.get(index);
 
         SelenideElement productNameElement = detail.$(".inventory_item_name");
-        //Assert.assertEquals(name, productNameElement.text());
         SelenideElement productPriceElement = detail.$(".inventory_item_price");
-        //Assert.assertEquals(price,productPriceElement.text());
         SelenideElement addToCartButton = detail.$(".btn_inventory");
         SelenideElement productDescriptionElement = detail.$(".inventory_item_desc");
-        //Assert.assertEquals(description,productDescriptionElement.getText());
 
         //Проверка корректного отображения кнопки Add to cart и ее активности
         Assert.assertTrue(addToCartButton.text().equalsIgnoreCase("Add to cart"), "Не все кнопки являются - Add to cart");

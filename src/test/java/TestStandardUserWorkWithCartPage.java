@@ -1,4 +1,5 @@
 import com.codeborne.selenide.*;
+import org.example.models.Product;
 import org.example.pages.BasePage;
 import org.example.pages.CartPage;
 import org.example.pages.LoginPage;
@@ -25,13 +26,13 @@ public class TestStandardUserWorkWithCartPage {
         WebDriverRunner.clearBrowserCache();
         clearBrowserLocalStorage();
         clearBrowserCookies();
-        loginPage = new LoginPage();
-
     }
     @org.testng.annotations.Test
     public void test5(){
+
+        loginPage = new LoginPage();
         //Проверка на корректное отображение элементов на странице авторизации
-        BasePage.checkURL("https://www.saucedemo.com/");
+        loginPage.checkURL();
         loginPage.checkLoginPage();
 
         //Авторизация
@@ -39,36 +40,41 @@ public class TestStandardUserWorkWithCartPage {
         loginPage.writePassword("secret_sauce");
         loginPage.auth();
 
-        //Проверка успешной авторизации
-        BasePage.checkURL("https://www.saucedemo.com/inventory.html");
-
         //Создания экземпляра страницы с товарами
         productsPage = new ProductsPage();
 
-        //Проверка успешной авторизации корректного отображения элементов на странице с товарами
+        //Проверка успешной авторизации и корректного отображения элементов на странице с товарами
+        productsPage.checkURL();
         productsPage.checkHeadersAndButtons();
         productsPage.checkAllProducts(6);
 
-        //Добавление одного случайного товара в корзину
-        productsPage.addToCartRandom();
+        //Добавление одного случайного товара в корзину, сохраняем его, для
+        // того чтобы затем сравнить совпал ли он в корзине
+        Product addedProduct = productsPage.addToCartRandom();
 
         //Проверка счетчика у корзины
         productsPage.checkAmountOfCart(1);
 
         productsPage.openCart();
 
-        BasePage.checkURL("https://www.saucedemo.com/cart.html");
-
         cartPage = new CartPage();
+
+        //Проверка успешной авторизации и корректного отображения элементов на странице корзины
+        cartPage.checkURL();
         cartPage.checkHeaders();
-        //cartPage.checkProduct()
+        cartPage.checkProduct(addedProduct);
 
         cartPage.deleteOneElementFromCart();
+        cartPage.checkCartSize(0);
+        //Проверяем счетчик корзины (не должен отображаться)
+        cartPage.checkCartCounterVisibility(false);
 
         cartPage.openLeftSideMenu();
 
         cartPage.logout();
 
         loginPage = new LoginPage();
+        loginPage.checkURL();
+        loginPage.checkLoginPage();
     }
 }
