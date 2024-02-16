@@ -1,17 +1,12 @@
 package org.example.pages;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.example.models.Product;
-import org.openqa.selenium.json.JsonOutput;
 import org.testng.Assert;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.codeborne.selenide.Condition.enabled;
@@ -50,14 +45,17 @@ public class ProductsPage extends BasePage {
         super();
     }
 
-    public List<String> addToCartRandom(){
+    public Product addToCartRandom(){
         Random random = new Random();
-        SelenideElement detail = productDetails.get(random.nextInt(6));
+        int randomIndexOfProduct = random.nextInt(6);
+        SelenideElement detail = productDetails.get(randomIndexOfProduct);
         SelenideElement addToCartButton = detail.$(".btn_inventory");
         addToCartButton.click();
-        List<String> results = new ArrayList<>();
-        Collections.addAll(results,detail.$(".inventory_item_name").text(),detail.$(".inventory_item_price").text(),detail.$(".inventory_item_desc").text());
-        return results;
+        checkRemoveButton(randomIndexOfProduct);
+        Product product = new Product(detail.$(".inventory_item_price").text(),
+                detail.$(".inventory_item_name").text(),
+                detail.$(".inventory_item_desc").text());
+        return product;
     }
 
     public void openCart(){
@@ -197,7 +195,7 @@ public class ProductsPage extends BasePage {
     }
 
     @Step("Проверка отображения всех элементов левого бокового меню")
-    public void checkLeftSideMenuContent(){
+    public void checkLeftSideMenuContent() {
         ElementsCollection menuButtons = $$(".bm-item.menu-item");
 
         // Проверяем отображение и активность каждой кнопки
