@@ -177,7 +177,8 @@ public class ProductsPage extends BasePage {
 
         //Проверяем отображение и активность кнопки ADD TO CART
         SelenideElement addToCartButton = detail.$(".btn_inventory");
-        Assert.assertTrue(addToCartButton.isDisplayed() && addToCartButton.isEnabled());
+        Assert.assertTrue(addToCartButton.text().equalsIgnoreCase("Add to cart"), "Не все кнопки являются - Add to cart");
+        Assert.assertTrue(addToCartButton.isDisplayed() && addToCartButton.isEnabled(), "Кнопка Add to cart не отображается или не активна");
 
         //Проверяем описание
         SelenideElement productDescriptionElement = detail.$(".inventory_item_desc");
