@@ -6,6 +6,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
+import org.example.models.Product;
 import org.openqa.selenium.json.JsonOutput;
 import org.testng.Assert;
 
@@ -142,17 +143,12 @@ public class ProductsPage extends BasePage {
                     "Ожидаемое количество: " + expectedAmount + ", Фактическое количество: " + $$x("//*[@id=\"inventory_container\"]/div").size());
             System.out.println("Ошибка проверки количества продуктов на главной странице" +
                     "Ожидаемое количество: " + expectedAmount + ", Фактическое количество: " + $$x("//*[@id=\"inventory_container\"]/div").size());
-            // Выбросить исключение, чтобы пометить тест как неудачный
+
             throw new AssertionError("Количество продуктов на главной странице не соответствует ожидаемому значению");
         }
-
-        // Сравнение названий, цен и описаний
-        checkProduct(0, "Sauce Labs Backpack", "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.", "$29.99");
-        checkProduct(1, "Sauce Labs Bike Light", "A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.", "$9.99");
-        checkProduct(2, "Sauce Labs Bolt T-Shirt", "Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% ringspun combed cotton, heather gray with red bolt.", "$15.99");
-        checkProduct(3, "Sauce Labs Fleece Jacket", "It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office.", "$49.99");
-        checkProduct(4, "Sauce Labs Onesie", "Rib snap infant onesie for the junior automation engineer in development. Reinforced 3-snap bottom closure, two-needle hemmed sleeved and bottom won't unravel.", "$7.99");
-        checkProduct(5, "Test.allTheThings() T-Shirt (Red)", "This classic Sauce Labs t-shirt is perfect to wear when cozying up to your keyboard to automate a few tests. Super-soft and comfy ringspun combed cotton.", "$15.99");
+        for(int i=0;i<Product.expectedProductsList.size();i++){
+            checkProduct(i,Product.expectedProductsList.get(i));
+        }
     }
 
     @Step("Проверка отображения заголовков и кнопок")
@@ -163,26 +159,24 @@ public class ProductsPage extends BasePage {
     }
 
     @Step("Проверка товара по его номеру")
-    public void checkProduct(int index, String name, String description, String price) {
+    public void checkProduct(int index, Product product) {
         //Выбираем товар по индексу для проверки
         SelenideElement detail = productDetails.get(index);
 
-        //Проверяем название
         SelenideElement productNameElement = detail.$(".inventory_item_name");
-        Assert.assertEquals(name, productNameElement.text());
-
-        //Проверяем цену
+        //Assert.assertEquals(name, productNameElement.text());
         SelenideElement productPriceElement = detail.$(".inventory_item_price");
-        Assert.assertEquals(price,productPriceElement.text());
-
-        //Проверяем отображение и активность кнопки ADD TO CART
+        //Assert.assertEquals(price,productPriceElement.text());
         SelenideElement addToCartButton = detail.$(".btn_inventory");
+        SelenideElement productDescriptionElement = detail.$(".inventory_item_desc");
+        //Assert.assertEquals(description,productDescriptionElement.getText());
+
+        //Проверка корректного отображения кнопки Add to cart и ее активности
         Assert.assertTrue(addToCartButton.text().equalsIgnoreCase("Add to cart"), "Не все кнопки являются - Add to cart");
         Assert.assertTrue(addToCartButton.isDisplayed() && addToCartButton.isEnabled(), "Кнопка Add to cart не отображается или не активна");
 
-        //Проверяем описание
-        SelenideElement productDescriptionElement = detail.$(".inventory_item_desc");
-        Assert.assertEquals(description,productDescriptionElement.getText());
+        Product productFromProductPage = new Product(productPriceElement.text(),productNameElement.text(),productDescriptionElement.text());
+        Assert.assertEquals(product,productFromProductPage,"Информация о товаре некорретна");
     }
 
     @Step("Проверка отсортированности списка товаров")

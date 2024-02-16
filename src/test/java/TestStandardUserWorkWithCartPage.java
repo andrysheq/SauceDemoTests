@@ -49,7 +49,7 @@ public class TestStandardUserWorkWithCartPage {
         productsPage.checkHeadersAndButtons();
         productsPage.checkAllProducts(6);
 
-        //Добавление всех товаров в корзину
+        //Добавление одного случайного товара в корзину
         productsPage.addToCartRandom();
 
         //Проверка счетчика у корзины
@@ -61,6 +61,7 @@ public class TestStandardUserWorkWithCartPage {
 
         cartPage = new CartPage();
         cartPage.checkHeaders();
+        //cartPage.checkProduct()
 
         cartPage.deleteOneElementFromCart();
 
