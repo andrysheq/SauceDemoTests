@@ -1,6 +1,9 @@
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+target/
 .idea/misc.xml
 pom.xml.tag
 pom.xml.releaseBackup
@@ -12,6 +15,7 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -46,3 +50,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Eclipse m2e generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
