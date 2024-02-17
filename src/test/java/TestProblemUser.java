@@ -1,19 +1,22 @@
 import com.codeborne.selenide.*;
+import org.example.models.TestListener;
 import org.example.pages.BasePage;
 import org.example.pages.CartPage;
 import org.example.pages.LoginPage;
 import org.example.pages.ProductsPage;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
-
+@Listeners(TestListener.class)
 public class TestProblemUser {
 
     public static LoginPage loginPage;
     public static ProductsPage productsPage;
 
     public static CartPage cartPage;
+
 
     @BeforeClass
     public void setUp(){

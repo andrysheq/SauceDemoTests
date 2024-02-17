@@ -1,5 +1,6 @@
 package org.example;
 
+import com.codeborne.selenide.logevents.SelenideLogger;
 import org.example.models.Product;
 import org.testng.annotations.BeforeSuite;
 
@@ -15,7 +16,6 @@ public class Main {
     @BeforeSuite
     public void initialize(){
         try {
-            //Configuration.reportsFolder = "target/allure-results/screenshots";
             BufferedReader reader = new BufferedReader(new InputStreamReader (new FileInputStream("src/main/resources/products.txt")));
             List<String> productDetails = new ArrayList<>();
             String productDetailsFromTextFile = reader.readLine();
