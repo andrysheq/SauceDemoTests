@@ -34,8 +34,11 @@ public class ProductsPage extends BasePage {
 
     //ElementsCollection leftSideMenuContent =
     private final SelenideElement logout = $x("//*[@id=\"logout_sidebar_link\"]");
+    public ProductsPage() {
+        super();
+    }
     @Override
-    @Step
+    @Step("Проверка URL-адреса")
     public void checkURL() {
         String currentURL = WebDriverRunner.url();
         String expectedURL = "https://www.saucedemo.com/inventory.html";
@@ -47,10 +50,6 @@ public class ProductsPage extends BasePage {
 
     public void logout(){
         logout.shouldBe(visible).click();
-    }
-
-    public ProductsPage() {
-        super();
     }
 
     public Product addToCartRandom(){

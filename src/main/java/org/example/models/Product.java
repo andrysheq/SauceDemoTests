@@ -2,6 +2,7 @@ package org.example.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Product {
     public static List<Product> expectedProductsList = new ArrayList<>();
@@ -61,5 +62,10 @@ public class Product {
         return title.equals(product.getTitle()) &&
                 price.equals(product.getPrice()) &&
                 desc.equals(product.getDesc());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price, title, desc);
     }
 }
