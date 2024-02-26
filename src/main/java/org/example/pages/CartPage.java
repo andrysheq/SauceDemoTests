@@ -23,7 +23,7 @@ public class CartPage extends BasePage {
         super();
     }
     @Override
-    @Step
+    @Step("Проверка URL-адреса")
     public void checkURL() {
         String currentURL = WebDriverRunner.url();
         String expectedURL = "https://www.saucedemo.com/cart.html";

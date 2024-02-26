@@ -20,7 +20,7 @@ public class LoginPage extends BasePage{
     }
 
     @Override
-    @Step
+    @Step("Проверка URL-адреса")
     public void checkURL() {
         String currentURL = WebDriverRunner.url();
         String expectedURL = "https://www.saucedemo.com/";
